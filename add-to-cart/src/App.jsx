@@ -1,33 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
 import './App.css'
-
+import "bootstrap/dist/css/bootstrap.min.css";
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 function App() {
-  const [count, setCount] = useState(0)
+  const [products, setProduct] = useState([])
+
+  useEffect(() => {
+    fetch("https://fakestoreapi.com/products")
+      .then(data => data.json())
+      .then(result => setProduct(result))
+  }, [])
+
+  const cards = products.map(product => (
+    <div className='col-md-3' style={{ margin: '10px' }}>
+      <Card style={{ width: '18rem' }} key={product.id} className='h-100 '>
+        <Card.Img variant="top" src={product.image} style={{ height: '200px', width: '200px' }} />
+        <Card.Body>
+          <Card.Title>{product.title}</Card.Title>
+          <Card.Text>
+            {product.price} taka
+          </Card.Text>
+
+        </Card.Body>
+        <Button variant="primary">Add to cart</Button>
+      </Card>
+    </div>))
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <h1>Product Dashboard</h1>
+      <div className='row'>
+        {
+          cards
+        }
+
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
